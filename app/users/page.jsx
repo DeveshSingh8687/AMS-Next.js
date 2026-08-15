@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Search, Plus, Edit2, Trash2, ToggleLeft, ToggleRight, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { addnewEmployee, deleteEmployee, getAllEmployee, toggleUserStatus, updateEmployee } from '@/client/employeeClient'
 import useCustomSession from '../hooks/useCustomSession'
-import { useSession } from "next-auth/react";
 
 const DEPARTMENTS = ["Engineering", "Marketing", "Sales", "HR", "Finance", "Operations", "Support"];
 
 export default function UserManagement() {
-  const { userInfo, token, tokenExpiry, status } = useCustomSession()
+  const { token, status } = useCustomSession();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -26,18 +25,19 @@ export default function UserManagement() {
   });
   const { toast } = useToast();
 
-  useEffect(() => {
-  if (status === "authenticated") {
-    loadData(); 
-  }
-}, [status, token]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
-    const data = await getAllEmployee(token)
-    setEmployees(data?.users);
+    const data = await getAllEmployee(token);
+    setEmployees(data?.users || []);
     setLoading(false);
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadData();
+    }
+  }, [status, loadData]);
 
   const filtered = employees.filter((e) => {
     const s = search.toLowerCase();

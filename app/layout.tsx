@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import AppShell from './components/AppShell';
 import Providers from "./SessionProvider";
+import { Toaster } from './components/ui/toaster';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -24,7 +25,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <Providers>
-        <AppShell>{children}</AppShell>
+          <AppShell>{children}</AppShell>
+          <Toaster />
         </Providers>
       </body>
     </html>

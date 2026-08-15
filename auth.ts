@@ -18,7 +18,7 @@ export const authOptions = {
           return null;
         }
 
-        const response = await fetch(`${baseUrl}/api/auth/login`, {
+        const response = await fetch(`${baseUrl}/auth/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -30,6 +30,7 @@ export const authOptions = {
         });
 
         const data = await response.json();
+        console.log(data, 'dataHere')
 
         if (!response.ok || !data.success) {
           return null;

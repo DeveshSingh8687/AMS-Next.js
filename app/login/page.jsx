@@ -37,7 +37,7 @@ export default function Login() {
         redirect: false,
       });
       if (result?.error) {
-        console.log("Login failed", result?.error);
+        console.log("Login failed", result);
         setError("Invalid email or password.");
         return;
       }
